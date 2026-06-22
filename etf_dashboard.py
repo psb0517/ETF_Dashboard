@@ -231,6 +231,7 @@ def build_all_etf_data():
             print("데이터 없음")
             continue
 
+        try_fetch(latest_d - timedelta(days=1))   # 전 거래일
         try_fetch(latest_d - timedelta(days=7))
         try_fetch(latest_d - timedelta(days=28))
 
