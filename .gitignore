@@ -1,0 +1,8 @@
+plotly.min.js
+etf_dashboard_*.html
+__pycache__/
+*.pyc
+.DS_Store
+# ETF 엑셀 폴더 (로컬 전용)
+KoAct_*/
+Time_*/
