@@ -1,4 +1,4 @@
-import io, os, re, requests, time, json, html as _html_mod, glob
+import io, re, requests, time, json, html
 from datetime import date, datetime, timedelta
 from pathlib import Path
 import pandas as pd
@@ -55,7 +55,6 @@ ETF_LIST = [
 ]
 
 OUTPUT_HTML = _SCRIPT_DIR / "docs" / "index.html"
-EMBED_PLOTLY = False
 PLOTLY_CDN = "https://cdn.plot.ly/plotly-2.35.2.min.js"
 
 OUTPUT_HTML.parent.mkdir(parents=True, exist_ok=True)
@@ -63,7 +62,7 @@ print(f"ETF: {len(ETF_LIST)}개  |  출력: {OUTPUT_HTML}")
 
 
 # ③ 엔진 — 수정할 필요 없습니다. 실행만 하세요.
-import os, re, sys, json, io, time, html
+import re, json, io, time, html
 from datetime import date as _date, datetime
 import pandas as pd
 
@@ -241,22 +240,7 @@ def build_all_etf_data():
     return all_data
 
 
-def ensure_plotly_local(out_dir):
-    """오프라인용 plotly.min.js 확보. 성공 시 로컬 파일명을, 실패 시 CDN URL 반환."""
-    if not EMBED_PLOTLY:
-        return PLOTLY_CDN
-    local = Path(out_dir) / "plotly.min.js"
-    if local.exists() and local.stat().st_size > 500_000:
-        return local.name
-    try:
-        import urllib.request
-        print("  plotly.min.js 다운로드 시도(오프라인 대비, 최초 1회)...")
-        urllib.request.urlretrieve(PLOTLY_CDN, str(local))
-        if local.stat().st_size > 500_000:
-            print("  → 로컬 캐시 완료. 이제 인터넷 없이도 차트가 열립니다.")
-            return local.name
-    except Exception as e:
-        print(f"  (오프라인 캐시 실패 → CDN 사용: {e})")
+def ensure_plotly_local(_out_dir):
     return PLOTLY_CDN
 
 
@@ -320,16 +304,8 @@ TEMPLATE = r"""<!DOCTYPE html>
   .brand{display:flex;flex-direction:column;gap:3px}
   .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:600}
   h1{font-size:23px;font-weight:800;margin:0;letter-spacing:-.01em}
-  .controls{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
-  .ctl{display:flex;flex-direction:column;gap:5px}
-  .ctl label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.02em}
-  .seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--panel)}
-  .seg button{appearance:none;border:0;background:transparent;padding:8px 14px;font-family:var(--sans);
-    font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap}
-  .seg button.on{background:var(--accent);color:#16202e}
   select{font-family:var(--mono);font-size:13px;font-weight:500;padding:8px 12px;border:1px solid var(--line);
     border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;min-width:150px}
-  .baseline-note{font-size:11px;color:var(--faint);font-family:var(--mono);align-self:flex-end;padding-bottom:9px}
 
   .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0 8px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 16px;position:relative;overflow:hidden}
