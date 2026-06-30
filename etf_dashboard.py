@@ -570,7 +570,7 @@ function renderCrossSummary(){
       const dir = (st==="NEW"||st==="EXPAND") ? "buy" : (st==="SOLD"||st==="CONTRACT") ? "sell" : null;
       if(!dir) return;
       // 종목명을 매칭 키로 사용 (운용사별 코드 형식이 달라도 같은 종목으로 묶임)
-      const mapKey = name.trim();
+      const mapKey = name.trim().toUpperCase();
       const map = dir==="buy"?buy:sell;
       if(!map[mapKey]) map[mapKey]={code, name, etfs:[]};
       if(!map[mapKey].etfs.some(e=>e.etf===etf)){
