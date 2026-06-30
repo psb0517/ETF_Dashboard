@@ -2,7 +2,7 @@ name: Daily ETF Dashboard Update
 
 on:
   schedule:
-    - cron: '0 1 * * 1-5'  # 평일 UTC 01:00 (한국 10:00)
+    - cron: '42 0 * * 1-5'  
   workflow_dispatch:        # GitHub 사이트에서 수동 실행도 가능
 
 jobs:
