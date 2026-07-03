@@ -36,6 +36,57 @@
   select{font-family:var(--mono);font-size:13px;font-weight:500;padding:8px 12px;border:1px solid var(--line);
     border-radius:8px;background:var(--panel);color:var(--ink);cursor:pointer;min-width:150px}
 
+  /* ── 티커·종목명 검색 ── */
+  .search-box{position:relative;display:flex;align-items:center;flex:0 1 260px}
+  .search-box input{font-family:var(--mono);font-size:13px;padding:9px 30px 9px 32px;border:1px solid var(--line);
+    border-radius:8px;background:var(--panel);color:var(--ink);width:100%;outline:none}
+  .search-box input:focus{border-color:var(--accent)}
+  .search-box input::placeholder{color:var(--faint)}
+  .search-box .sicon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--faint);pointer-events:none;font-size:12px}
+  .search-box .sclear{position:absolute;right:8px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--faint);
+    font-size:14px;line-height:1;display:none;padding:2px}
+  .search-box .sclear:hover{color:var(--ink)}
+  .sug{position:absolute;top:calc(100% + 6px);right:0;width:min(360px,86vw);max-height:340px;overflow:auto;z-index:40;
+    background:var(--panel2);border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.45);display:none}
+  .sug.on{display:block}
+  .sug-item{padding:9px 12px;border-bottom:1px solid var(--line2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .sug-item:last-child{border-bottom:0}
+  .sug-item:hover,.sug-item.active{background:var(--hover)}
+  .sug-name{font-weight:600;font-size:13px}
+  .sug-name .code{color:var(--faint);font-family:var(--mono);font-size:11px;margin-left:7px}
+  .sug-cnt{font-family:var(--mono);font-size:11px;color:var(--accent);white-space:nowrap}
+  .sug-empty{padding:14px 12px;color:var(--muted);font-size:12.5px}
+
+  /* ── 검색 결과 패널 ── */
+  .spanel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 16px;margin:18px 0 6px;display:none}
+  .spanel.on{display:block}
+  .sp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+  .sp-title{font-size:16px;font-weight:800}
+  .sp-title .code{font-family:var(--mono);font-size:12px;color:var(--faint);margin-left:8px}
+  .sp-sub{font-size:12px;color:var(--muted);margin-top:3px}
+  .sp-sub b{color:var(--accent);font-weight:700}
+  .sp-close{appearance:none;border:1px solid var(--line);background:var(--panel2);color:var(--muted);
+    border-radius:8px;padding:6px 11px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+  .sp-close:hover{color:var(--ink);border-color:var(--accent)}
+  .holder-row{display:grid;grid-template-columns:1.7fr .8fr .9fr .9fr .9fr auto;gap:10px;align-items:center;
+    padding:9px 10px;border-bottom:1px solid var(--line2);cursor:pointer}
+  .holder-row:hover{background:var(--hover)}
+  .holder-row.head{cursor:default;font-size:11px;color:var(--muted);font-weight:700;letter-spacing:.02em;
+    border-bottom:1px solid var(--line);background:transparent}
+  .holder-row.head:hover{background:transparent}
+  .h-etf{font-weight:600;font-size:13px;display:flex;align-items:center;gap:7px;min-width:0}
+  .h-etf .lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .h-num{font-family:var(--mono);text-align:right;font-variant-numeric:tabular-nums;font-size:12.5px}
+  .h-num .code{color:var(--faint);font-size:11px}
+  .h-jump{font-size:11px;color:var(--accent);white-space:nowrap;text-align:right}
+  .gbadge{font-size:10px;font-weight:700;padding:1px 6px;border-radius:5px;letter-spacing:.02em;flex:none}
+  .gbadge.time{background:var(--accent-soft);color:var(--accent)}
+  .gbadge.koact{background:var(--exp-bg);color:var(--exp-text)}
+  @media(max-width:880px){
+    .holder-row{grid-template-columns:1.5fr .8fr .9fr auto;font-size:12px}
+    .holder-row .h-rank,.holder-row .h-jump{display:none}
+  }
+
   .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0 8px}
   .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:15px 16px;position:relative;overflow:hidden}
   .card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px}
@@ -101,6 +152,8 @@
   tr.r-sold{background:var(--sold-bg)} tr.r-sold:hover{background:rgba(248,81,73,.20)}
   tr.r-new td:first-child{box-shadow:inset 3px 0 0 var(--new-line)}
   tr.r-sold td:first-child{box-shadow:inset 3px 0 0 var(--sold-line)}
+  tr.flash td{animation:flashrow 1.8s ease-out}
+  @keyframes flashrow{0%,28%{background:var(--accent)}100%{background:transparent}}
   .tag{display:inline-block;font-family:var(--sans);font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.02em}
   .tag.new{background:var(--new-line);color:#16202e}
   .tag.sold{background:var(--sold-line);color:#16202e}
@@ -128,9 +181,17 @@
       <span class="eyebrow">ETF Holdings Monitor · 수량 기준</span>
       <h1>구성종목 일별 변동 대시보드</h1>
     </div>
+    <div class="search-box">
+      <span class="sicon">🔍</span>
+      <input id="tickerSearch" type="text" placeholder="티커·종목명 검색" autocomplete="off" spellcheck="false">
+      <span class="sclear" id="searchClear" title="지우기">✕</span>
+      <div class="sug" id="sug"></div>
+    </div>
     <select id="dateSel" style="display:none"></select>
     <span id="baseNote" style="display:none"></span>
   </header>
+
+  <section class="spanel" id="searchPanel"></section>
 
   <section class="xsum" id="xsum"></section>
 
@@ -156,7 +217,7 @@
     <div class="tabpanel" id="tab3"></div>
   </div>
 
-  <footer>생성: 2026-07-03 01:05 · 등락 색상은 한국 시장 관례(상승 빨강 / 하락 파랑)</footer>
+  <footer>생성: 2026-07-03 06:42 · 등락 색상은 한국 시장 관례(상승 빨강 / 하락 파랑)</footer>
 </div>
 
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
@@ -165,7 +226,7 @@ const ETF_DATA = {"Time_글로벌AI인공지능액티브": {"dates": ["2026-06-0
 const DEFAULT_ETF = "Time_글로벌AI인공지능액티브";
 const EXPAND_PCT = 0.10;   // 수량 증감 ±10% 기준
 const NO_SORT = ()=>({ day:{col:null,dir:"desc"}, wk:{col:null,dir:"desc"}, mo:{col:null,dir:"desc"} });
-const state = { etf: DEFAULT_ETF, dateIdx: 0, tab: 0, sorts: NO_SORT() };
+const state = { etf: DEFAULT_ETF, dateIdx: 0, tab: 0, sorts: NO_SORT(), searchKey: null, highlight: null };
 
 // 표 컬럼 정의 (헤더 순서 = 본문 순서)
 const COLS = [
@@ -372,7 +433,7 @@ function rowHTML(r){
   const [tc,tl]=TAG[r.status];
   const pctTitle = (r.status==="EXPAND"||r.status==="CONTRACT")&&r.pct!=null
     ? ` title="수량 ${(r.pct>0?'+':'')}${(r.pct*100).toFixed(1)}%"` : "";
-  return `<tr class="${cls}">
+  return `<tr class="${cls}" data-code="${esc(r.code||"")}" data-name="${esc(r.name||"")}">
     <td class="l"><span class="tag ${tc}"${pctTitle}>${tl}</span></td>
     <td class="l name"><b>${esc(r.name)}</b></td>
     <td class="l code">${esc(r.code||"")}</td>
@@ -438,6 +499,172 @@ function renderTab3(){
   document.getElementById("tab3").innerHTML = blk("1주 전 대비", wk, "wk") + blk("1개월 전 대비", mo, "mo");
 }
 
+// ---------- ticker search ----------
+function refDate(){ return dates()[state.dateIdx]; }   // 현재 선택 기준일(선택 ETF 기준)
+
+// 각 ETF의 asOf(<=ref 중 최신)와 그 직전일
+function etfAsOf(etf, ref){
+  const ds=ETF_DATA[etf].dates; let cur=null;
+  for(const d of ds){ if(d<=ref) cur=d; }
+  if(!cur) return null;
+  const i=ds.indexOf(cur);
+  return {cur, prev: i>0 ? ds[i-1] : null};
+}
+
+let _idxCache={ref:null, idx:null};
+function buildSearchIndex(ref){
+  if(_idxCache.ref===ref && _idxCache.idx) return _idxCache.idx;
+  const idx={};   // mapKey -> {code, name, holders:[...]}
+  Object.keys(ETF_DATA).forEach(etf=>{
+    const ao=etfAsOf(etf, ref); if(!ao) return;
+    const T=holdingsOf(etf, ao.cur), B=ao.prev?holdingsOf(etf, ao.prev):{};
+    // 이 ETF의 활성 보유 → 비중 순위 산정
+    const active=Object.values(T).filter(isActive).slice().sort((a,b)=>(b.weight||0)-(a.weight||0));
+    const total=active.length;
+    const rankOf=new Map();
+    active.forEach((o,i)=> rankOf.set(o.code ? o.code+"|"+o.name : o.name, i+1));
+    Object.keys(T).forEach(k=>{
+      const o=T[k]; if(!isActive(o)) return;
+      const code=(o.code||"").trim(), name=(o.name||"").trim();
+      const mapKey = code ? code.toUpperCase().replace(/\s+/g," ") : name.toUpperCase().replace(/\s+/g," ");
+      if(!idx[mapKey]) idx[mapKey]={code, name, holders:[]};
+      if(code && !idx[mapKey].code) idx[mapKey].code=code;
+      idx[mapKey].holders.push({
+        etf, label:stripPrefix(etf), group:etfGroup(etf),
+        weight:o.weight||0, qty:o.qty||0,
+        rank:rankOf.get(o.code ? o.code+"|"+o.name : o.name)||null, total,
+        status:classify(T[k], B[k]) || "HELD",
+        code:o.code||"", name:o.name
+      });
+    });
+  });
+  _idxCache={ref, idx};
+  return idx;
+}
+
+function searchMatches(q){
+  q=q.trim().toLowerCase(); if(!q) return [];
+  const idx=buildSearchIndex(refDate());
+  const out=[];
+  Object.keys(idx).forEach(mk=>{
+    const e=idx[mk];
+    const nm=(e.name||"").toLowerCase(), cd=(e.code||"").toLowerCase();
+    if(nm.includes(q) || cd.includes(q))
+      out.push({mapKey:mk, code:e.code, name:e.name, count:e.holders.length});
+  });
+  out.sort((a,b)=>{
+    const as=(a.name||"").toLowerCase().startsWith(q)?0:1;
+    const bs=(b.name||"").toLowerCase().startsWith(q)?0:1;
+    return as-bs || b.count-a.count || (a.name||"").localeCompare(b.name||"","ko");
+  });
+  return out;
+}
+
+function renderSug(q){
+  const box=document.getElementById("sug");
+  document.getElementById("searchClear").style.display = q ? "block" : "none";
+  if(!q.trim()){ box.classList.remove("on"); box.innerHTML=""; return; }
+  const matches=searchMatches(q).slice(0,40);
+  if(!matches.length){
+    box.innerHTML=`<div class="sug-empty">일치하는 종목이 없어요.</div>`;
+    box.classList.add("on"); return;
+  }
+  box.innerHTML=matches.map(m=>
+    `<div class="sug-item" data-key="${esc(m.mapKey)}">
+       <span class="sug-name">${esc(m.name)}${m.code?`<span class="code">${esc(m.code)}</span>`:""}</span>
+       <span class="sug-cnt">${m.count}개 ETF</span>
+     </div>`).join("");
+  box.classList.add("on");
+  box.querySelectorAll(".sug-item").forEach(it=> it.onclick=()=> selectSecurity(it.dataset.key));
+}
+
+function selectSecurity(mapKey){
+  state.searchKey=mapKey;
+  document.getElementById("sug").classList.remove("on");
+  renderSearchPanel();
+  document.getElementById("searchPanel").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function clearSearch(){
+  state.searchKey=null;
+  const inp=document.getElementById("tickerSearch");
+  inp.value="";
+  document.getElementById("searchClear").style.display="none";
+  document.getElementById("sug").classList.remove("on");
+  renderSearchPanel();
+}
+
+function renderSearchPanel(){
+  const panel=document.getElementById("searchPanel");
+  if(!state.searchKey){ panel.classList.remove("on"); panel.innerHTML=""; return; }
+  const e=buildSearchIndex(refDate())[state.searchKey];
+  panel.classList.add("on");
+  if(!e){   // 기준일이 바뀌어 현재 시점엔 어떤 ETF도 보유하지 않는 경우
+    panel.innerHTML=`<div class="sp-head"><div>
+        <div class="sp-title">${esc(state.searchKey)}</div>
+        <div class="sp-sub">${esc(refDate())} 기준으로 이 종목을 보유한 ETF가 없어요.</div></div>
+      <button class="sp-close" onclick="clearSearch()">닫기</button></div>`;
+    return;
+  }
+  const holders=e.holders.slice().sort((a,b)=>(b.weight||0)-(a.weight||0));
+  const rows=holders.map(h=>{
+    const [tc,tl]=TAG[h.status]||TAG.HELD;
+    return `<div class="holder-row" data-etf="${esc(h.etf)}" data-code="${esc(h.code||"")}" data-name="${esc(h.name||"")}">
+      <span class="h-etf"><span class="gbadge ${h.group==='KoAct'?'koact':'time'}">${esc(h.group)}</span><span class="lbl">${esc(h.label)}</span></span>
+      <span class="h-num">${h.weight? h.weight.toFixed(2)+'%' : '–'}</span>
+      <span class="h-num">${fmtInt(h.qty)}</span>
+      <span class="h-num h-rank">${h.rank? `${h.rank}위<span class="code"> / ${h.total}</span>` : '–'}</span>
+      <span><span class="tag ${tc}">${tl}</span></span>
+      <span class="h-jump">이동 →</span>
+    </div>`;
+  }).join("");
+  panel.innerHTML=`
+    <div class="sp-head">
+      <div>
+        <div class="sp-title">${esc(e.name)}${e.code?`<span class="code">${esc(e.code)}</span>`:""}</div>
+        <div class="sp-sub"><b>${holders.length}개 ETF</b> 보유 · ${esc(refDate())} 기준 · 상태는 전일 대비</div>
+      </div>
+      <button class="sp-close" onclick="clearSearch()">닫기</button>
+    </div>
+    <div class="holder-row head">
+      <span>ETF</span><span class="h-num">비중</span><span class="h-num">수량</span>
+      <span class="h-num h-rank">ETF내 순위</span><span>전일 대비</span><span class="h-jump"></span>
+    </div>
+    ${rows}`;
+  panel.querySelectorAll(".holder-row:not(.head)").forEach(r=>
+    r.onclick=()=> jumpToEtf(r.dataset.etf, r.dataset.code, r.dataset.name));
+}
+
+function jumpToEtf(etf, code, name){
+  const keepDate=dates()[state.dateIdx];        // 현재 기준일 유지 시도
+  state.etf=etf; state.sorts=NO_SORT();
+  document.querySelectorAll("#etfSeg button").forEach(b=> b.classList.toggle("on", b.dataset.etf===etf));
+  buildDateSel(keepDate);
+  // 일일 변경 내역 탭으로 전환
+  state.tab=0;
+  document.querySelectorAll("#tabs button").forEach(b=> b.classList.toggle("on", +b.dataset.tab===0));
+  document.querySelectorAll(".tabpanel").forEach((p,i)=> p.classList.toggle("on", i===0));
+  state.highlight={code:(code||"").trim().toUpperCase(), name:(name||"").trim().toUpperCase()};
+  renderAll();
+  requestAnimationFrame(highlightRow);
+}
+
+function highlightRow(){
+  if(!state.highlight) return;
+  const {code, name}=state.highlight;
+  let target=null;
+  document.querySelectorAll("#tab0 tbody tr").forEach(tr=>{
+    if(target) return;
+    const c=(tr.dataset.code||"").trim().toUpperCase();
+    const n=(tr.dataset.name||"").trim().toUpperCase();
+    if(code ? c===code : n===name) target=tr;
+  });
+  state.highlight=null;
+  if(!target) return;
+  target.scrollIntoView({behavior:"smooth", block:"center"});
+  target.classList.remove("flash"); void target.offsetWidth; target.classList.add("flash");
+}
+
 // ---------- charts ----------
 const PLOT_DARK = {
   font:{family:"'Pretendard',sans-serif",size:12,color:"#e9ecf3"},
@@ -490,7 +717,7 @@ function renderActiveTab(){
   else if(state.tab===1) renderTimeline();
   else if(state.tab===2) renderTab3();
 }
-function renderAll(){ renderCrossSummary(); renderCards(); renderActiveTab(); }
+function renderAll(){ renderCrossSummary(); renderCards(); renderActiveTab(); renderSearchPanel(); }
 
 function buildEtfSeg(){
   const wrap=document.getElementById("etfSeg");
@@ -529,8 +756,21 @@ function bindTabs(){
     if(hasPlotly() && state.tab===1){ try{Plotly.Plots.resize(document.getElementById("timelineChart"));}catch(e){} }
   });
 }
+function bindSearch(){
+  const inp=document.getElementById("tickerSearch");
+  inp.addEventListener("input", e=> renderSug(e.target.value));
+  inp.addEventListener("focus", e=>{ if(e.target.value.trim()) renderSug(e.target.value); });
+  inp.addEventListener("keydown", e=>{
+    if(e.key==="Enter"){ const first=document.querySelector("#sug .sug-item"); if(first) first.click(); }
+    else if(e.key==="Escape"){ document.getElementById("sug").classList.remove("on"); inp.blur(); }
+  });
+  document.getElementById("searchClear").onclick=clearSearch;
+  document.addEventListener("click", e=>{
+    if(!e.target.closest(".search-box")) document.getElementById("sug").classList.remove("on");
+  });
+}
 function init(){
-  buildEtfSeg(); buildDateSel(); bindTabs();
+  buildEtfSeg(); buildDateSel(); bindTabs(); bindSearch();
   document.getElementById("dateSel").onchange=e=>{ state.dateIdx=+e.target.value; state.sorts=NO_SORT(); renderAll(); };
   renderAll();
 }
